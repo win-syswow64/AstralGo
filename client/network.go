@@ -1,17 +1,17 @@
 package client
 
 import (
+	"bufio"
 	"context"
 	"encoding/hex"
 	"net"
 	"net/netip"
+	"os"
 	"runtime/debug"
 	"sort"
+	"strings"
 	"sync"
 	"time"
-	"os"
-	"bufio"  
-	"strings"
 
 	"github.com/pkg/errors"
 
@@ -468,9 +468,7 @@ func (c *QQClient) netLoop() {
 				c.error("身份验证失败，请重新登录。")
 				c.Disconnect()
 				go c.DisconnectedEvent.dispatch(c, &DisconnectedEvent{Message: "Authentication failed, please login again", Reconnection: false})
-				c.info("按 Enter 继续....")
-				readLine()
-				os.Exit(0)
+				continue
 			} else if errors.Is(err, network.ErrSessionExpired) || errors.Is(err, network.ErrPacketDropped) {
 				c.Disconnect()
 				go c.DisconnectedEvent.dispatch(c, &DisconnectedEvent{Message: "session expired", Reconnection: true})
@@ -479,9 +477,7 @@ func (c *QQClient) netLoop() {
 				c.error("你号触发违规被限制了，所以不能说话，请上手机客户端查看情况。")
 				c.Disconnect()
 				go c.DisconnectedEvent.dispatch(c, &DisconnectedEvent{Message: "your chat permission has been stripped", Reconnection: false})
-				c.info("按 Enter 继续....")
-				readLine()
-				os.Exit(0)
+				continue
 			}
 			errCount++
 			if errCount > 2 {
