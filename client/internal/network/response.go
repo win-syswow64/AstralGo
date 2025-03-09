@@ -27,6 +27,7 @@ var (
 	ErrSessionExpired    = errors.New("session expired")
 	ErrPacketDropped     = errors.New("packet dropped")
 	ErrInvalidPacketType = errors.New("invalid packet type")
+	ErrAuthenticationFailed = errors.New("Authentication failed, please login again")
 )
 
 func (t *Transport) ReadResponse(head []byte) (*Response, error) {
@@ -69,6 +70,8 @@ func (t *Transport) readSSOFrame(resp *Response, payload []byte) error {
 	switch retCode {
 	case 0:
 		// ok
+	case -10005:
+		return errors.WithStack(ErrAuthenticationFailed)
 	case -10008:
 		return errors.WithStack(ErrSessionExpired)
 	case -10201: //社交限制

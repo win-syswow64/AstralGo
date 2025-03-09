@@ -9,6 +9,9 @@ import (
 	"sort"
 	"sync"
 	"time"
+	"os"
+	"bufio"  
+	"strings"
 
 	"github.com/pkg/errors"
 
@@ -34,6 +37,14 @@ type ConnectionQualityInfo struct {
 	SrvServerLatency int64
 	// SrvServerPacketLoss Highway服务器ICMP丢包数.
 	SrvServerPacketLoss int
+}
+
+var console = bufio.NewReader(os.Stdin)
+
+func readLine() (str string) {
+	str, _ = console.ReadString('\n')
+	str = strings.TrimSpace(str)
+	return
 }
 
 func (c *QQClient) ConnectionQualityTest() *ConnectionQualityInfo {
@@ -453,7 +464,14 @@ func (c *QQClient) netLoop() {
 			}
 
 			c.error("parse incoming packet error: %v", err)
-			if errors.Is(err, network.ErrSessionExpired) || errors.Is(err, network.ErrPacketDropped) {
+			if errors.Is(err, network.ErrAuthenticationFailed) {
+				c.error("身份验证失败，请重新登录。")
+				c.Disconnect()
+				go c.DisconnectedEvent.dispatch(c, &DisconnectedEvent{Message: "Authentication failed, please login again", Reconnection: false})
+				c.info("按 Enter 继续....")
+				readLine()
+				os.Exit(0)
+			} else if errors.Is(err, network.ErrSessionExpired) || errors.Is(err, network.ErrPacketDropped) {
 				c.Disconnect()
 				go c.DisconnectedEvent.dispatch(c, &DisconnectedEvent{Message: "session expired", Reconnection: true})
 				continue
@@ -461,7 +479,9 @@ func (c *QQClient) netLoop() {
 				c.error("你号触发违规被限制了，所以不能说话，请上手机客户端查看情况。")
 				c.Disconnect()
 				go c.DisconnectedEvent.dispatch(c, &DisconnectedEvent{Message: "your chat permission has been stripped", Reconnection: false})
-				continue
+				c.info("按 Enter 继续....")
+				readLine()
+				os.Exit(0)
 			}
 			errCount++
 			if errCount > 2 {
