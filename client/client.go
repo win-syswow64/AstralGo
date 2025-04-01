@@ -112,6 +112,7 @@ type QQClient struct {
 	FriendNotifyEvent                 EventHandle[INotifyEvent]
 	MemberSpecialTitleUpdatedEvent    EventHandle[*MemberSpecialTitleUpdatedEvent]
 	GroupDigestEvent                  EventHandle[*GroupDigestEvent]
+	GroupReactionEvent                EventHandle[*GroupReactionEvent]
 	OtherClientStatusChangedEvent     EventHandle[*OtherClientStatusChangedEvent]
 	OfflineFileEvent                  EventHandle[*OfflineFileEvent]
 	GroupDisbandEvent                 EventHandle[*GroupDisbandEvent]

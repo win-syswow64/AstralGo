@@ -503,6 +503,20 @@ func decodeOlPushServicePacket(c *QQClient, pkt *network.Packet) (any, error) {
 					})
 				}
 			}
+			if b.OptReaction != nil {
+				data := b.OptReaction.Data.Data
+				reactionType := data.Data.Type
+				if reactionType == 1 || reactionType == 2 {
+					c.GroupReactionEvent.dispatch(c, &GroupReactionEvent{
+						GroupCode:   int64(groupCode),
+						OperatorUin: c.GetUINByUID(data.Data.OperatorUid),
+						MessageID:   int32(data.Target.Seq),
+						Icon:        string(data.Data.Code),
+						Count:       int32(data.Data.Count),
+						IsAdd:       bool(reactionType == 1),
+					})
+				}
+			}
 			if b.QqGroupDigestMsg != nil {
 				digest := b.QqGroupDigestMsg
 				c.GroupDigestEvent.dispatch(c, &GroupDigestEvent{
