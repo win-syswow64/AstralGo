@@ -48,8 +48,38 @@ type NotifyMsgBody struct {
 	OptMsgRecall      *MessageRecallReminder `protobuf:"bytes,11,opt"`
 	OptGeneralGrayTip []byte                 `protobuf:"bytes,26,opt"`
 	OptMsgRedTips     *RedGrayTipsInfo       `protobuf:"bytes,9,opt"`
+	OptReaction       *GroupReactionData0    `protobuf:"bytes,44,opt"`
 	QqGroupDigestMsg  *QQGroupDigestMsg      `protobuf:"bytes,33,opt"`
 	ServiceType       int32                  `protobuf:"varint,13,opt"`
+}
+
+type GroupReactionData0 struct {
+	Data *GroupReactionData1 `protobuf:"bytes,1,opt"`
+	_    [0]func()
+}
+
+type GroupReactionData1 struct {
+	Data *GroupReactionData2 `protobuf:"bytes,1,opt"`
+	_    [0]func()
+}
+
+type GroupReactionData2 struct {
+	Target *GroupReactionTarget `protobuf:"bytes,2,opt"`
+	Data   *GroupReactionData3  `protobuf:"bytes,3,opt"`
+	_      [0]func()
+}
+
+type GroupReactionTarget struct {
+	Seq int32 `protobuf:"varint,1,opt"`
+	_   [0]func()
+}
+
+type GroupReactionData3 struct {
+	Code        string `protobuf:"bytes,1,opt"`
+	Count       int32  `protobuf:"varint,3,opt"`
+	OperatorUid string `protobuf:"bytes,4,opt"`
+	Type        int32  `protobuf:"varint,5,opt"` // 1 Add 2 Remove
+	_           [0]func()
 }
 
 type QQGroupDigestMsg struct {

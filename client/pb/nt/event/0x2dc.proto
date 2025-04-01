@@ -44,8 +44,29 @@ message NotifyMsgBody {
   MessageRecallReminder optMsgRecall = 11;
   bytes optGeneralGrayTip = 26;
   RedGrayTipsInfo optMsgRedTips = 9;
+  GroupReactionData0 optReaction = 44;
   QQGroupDigestMsg qqGroupDigestMsg = 33;
   int32 serviceType = 13;
+}
+
+message GroupReactionData0 {
+  GroupReactionData1 data = 1;
+}
+message GroupReactionData1 {
+  GroupReactionData2 data = 1;
+}
+message GroupReactionData2 {
+  GroupReactionTarget target = 2;
+  GroupReactionData3 data = 3;
+}
+message GroupReactionTarget {
+  int32 seq = 1;
+}
+message GroupReactionData3 {
+  string code = 1;
+  int32 count = 3;
+  string operatorUid = 4;
+  int32 type = 5; // 1 Add 2 Remove
 }
 
 message QQGroupDigestMsg {

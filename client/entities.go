@@ -236,6 +236,16 @@ type (
 		OperatorNick      string
 	}
 
+	// 群消息回应表情
+	GroupReactionEvent struct {
+		GroupCode   int64
+		OperatorUin int64
+		MessageID   int32
+		Icon        string
+		Count       int32
+		IsAdd       bool
+	}
+
 	GuildMessageReactionsUpdatedEvent struct {
 		OperatorId uint64 // OperatorId 操作者TinyId, 删除贴表情的事件下不会有值
 		EmojiId    int32  // EmojiId 被贴的表情, 只有自身消息被贴表情才会有值
