@@ -365,7 +365,7 @@ func (m *GroupMemberInfo) DisplayName() string {
 }
 
 func (m *GroupMemberInfo) EditCard(card string) {
-	if m.CardChangable() && len(card) <= 60 {
+	if m.CardChangeable() && len(card) <= 60 {
 		m.Group.client.editMemberCard(m.Group.Code, m.Uin, card)
 		m.CardName = card
 	}
@@ -429,7 +429,7 @@ func (m *GroupMemberInfo) Manageable() bool {
 	return m.Permission != Administrator || self == Owner
 }
 
-func (m *GroupMemberInfo) CardChangable() bool {
+func (m *GroupMemberInfo) CardChangeable() bool {
 	if m.Uin == m.Group.client.Uin {
 		return true
 	}
@@ -437,5 +437,5 @@ func (m *GroupMemberInfo) CardChangable() bool {
 	if self == Member {
 		return false
 	}
-	return m.Permission != Owner
+	return self == Administrator
 }
